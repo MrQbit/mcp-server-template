@@ -16,6 +16,7 @@ from mcp.errors import MCPError
 from src.config import config
 from src.utils import get_version, setup_logging
 from src.database.context import DatabaseContextProvider
+from src.api.provider import DynamicToolProvider
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -40,6 +41,9 @@ mcp = FastMCP(
 
 # Register the database context provider
 mcp.register_context_provider(DatabaseContextProvider())
+
+# Initialize API tool provider
+api_provider = DynamicToolProvider()
 
 
 # Define tools
@@ -84,6 +88,25 @@ For each language, please discuss:
 - Performance characteristics
 
 Then provide a concise comparison highlighting when each would be the best choice for different scenarios."""
+
+
+async def register_api_tools():
+    """Register tools from configured API specifications."""
+    for spec in config.api.specs:
+        try:
+            tool_names = await api_provider.register_api_tools(
+                spec_url=spec.url,
+                api_type=spec.type,
+                auth_config=spec.auth,
+                rate_limit_config=spec.rate_limits
+            )
+            logger.info(f"Registered {len(tool_names)} tools from {spec.name}")
+        except Exception as e:
+            logger.error(f"Failed to register tools from {spec.name}: {e}")
+
+
+# Register API tools before starting the server
+asyncio.create_task(register_api_tools())
 
 
 async def run_server(

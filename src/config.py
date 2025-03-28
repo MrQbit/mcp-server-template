@@ -3,6 +3,8 @@
 from typing import Any, Dict, List, Optional
 from pydantic import BaseSettings
 
+from .api.models import APIConfig
+
 
 class DatabaseConfig(BaseSettings):
     """Database configuration settings."""
@@ -44,6 +46,7 @@ class ServerConfig:
             "github": "https://github.com/yourusername/mcp-server-template-python",
         }
         self.db: DatabaseConfig = DatabaseConfig()
+        self.api: APIConfig = APIConfig()
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration to dictionary."""

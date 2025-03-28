@@ -11,6 +11,7 @@ A ready-to-use template for building Model Context Protocol (MCP) servers in Pyt
 - [Command Line Options](#command-line-options)
 - [Creating Your Own Tools and Prompts](#creating-your-own-tools-and-prompts)
 - [Database Support](#database-support)
+- [API Tool Support](#api-tool-support)
 - [Project Structure](#project-structure)
 - [Deployment Options](#deployment-options)
 - [Development Guide](#development-guide)
@@ -196,6 +197,74 @@ This template includes support for connecting to external PostgreSQL databases. 
    ```
 
 The database context provider automatically manages connections and sessions, with proper connection pooling and cleanup.
+
+## API Tool Support
+
+This template includes support for automatically generating tools from API specifications. You can add tools by specifying OpenAPI, Swagger, or GraphQL API endpoints.
+
+### Configuration
+
+1. Copy `.env.example` to `.env` and configure your API endpoints:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Update the `.env` file with your API configurations:
+   ```env
+   API_SPECS='[
+     {
+       "name": "weather",
+       "url": "https://api.openweathermap.org/openapi.json",
+       "type": "openapi",
+       "auth": {
+         "type": "api_key",
+         "key": "your_api_key"
+       },
+       "rate_limits": {
+         "requests_per_minute": 60
+       }
+     }
+   ]'
+   ```
+
+### Supported API Types
+
+- **OpenAPI/Swagger**: Automatically generates tools from OpenAPI 3.0 or Swagger 2.0 specifications
+- **GraphQL**: Generates tools from GraphQL schemas (coming soon)
+
+### Features
+
+- Automatic tool generation from API specifications
+- Support for multiple authentication methods:
+  - API Key
+  - Bearer Token
+  - OAuth2 (coming soon)
+- Rate limiting support
+- Type-safe parameter and response handling
+- Automatic documentation generation
+
+### Example Usage
+
+The generated tools can be used like any other MCP tool:
+
+```python
+@mcp.tool()
+async def get_weather(
+    city: str,
+    context: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Get weather information for a city."""
+    weather_api = context["api_clients"]["weather"]
+    response = await weather_api.get_weather(city=city)
+    return {"temperature": response.temperature}
+```
+
+### Security Considerations
+
+- API keys and tokens are managed securely through environment variables
+- Rate limiting prevents abuse of external APIs
+- Input validation ensures safe API calls
+- Authentication is handled automatically
 
 ---
 
