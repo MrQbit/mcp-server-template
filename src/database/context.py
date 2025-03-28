@@ -2,29 +2,32 @@
 
 from typing import Any, Dict
 from mcp import Context, ContextProvider
-
-from .connection import get_db_session
+from .search import DatabaseSearchEngine
 
 
 class DatabaseContextProvider(ContextProvider):
-    """Provides database sessions as context for MCP tools."""
+    """Provides database search capabilities as context for MCP tools."""
+
+    def __init__(self):
+        """Initialize the database search engine."""
+        self.search_engine = DatabaseSearchEngine()
 
     async def provide(self, request_context: Dict[str, Any]) -> Context:
-        """Provide a database session as context."""
-        session = await get_db_session().__aenter__()
-        
-        async def cleanup():
-            await session.__aexit__(None, None, None)
-        
+        """Provide database search capabilities as context."""
         return Context(
-            data={"db_session": session},
-            cleanup=cleanup
+            data={
+                "search": {
+                    "text_search": self.search_engine.text_search,
+                    "vector_search": self.search_engine.vector_search,
+                    "metadata": self.search_engine.get_available_collections
+                }
+            }
         )
 
     @property
     def name(self) -> str:
-        return "database"
+        return "database_search"
 
     @property
     def description(self) -> str:
-        return "Provides database session for database operations" 
+        return "Provides search capabilities for connected databases" 

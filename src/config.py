@@ -1,11 +1,12 @@
 """Configuration settings for the MCP server."""
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseSettings
 
 
 class DatabaseConfig(BaseSettings):
     """Database configuration settings."""
+    # Database connection settings
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     DB_NAME: str = "mcp_db"
@@ -13,6 +14,12 @@ class DatabaseConfig(BaseSettings):
     DB_PASSWORD: str = ""
     DB_POOL_SIZE: int = 5
     DB_MAX_OVERFLOW: int = 10
+    
+    # Search configuration
+    VECTOR_SIMILARITY_THRESHOLD: float = 0.7
+    MAX_SEARCH_RESULTS: int = 100
+    ENABLE_VECTOR_SEARCH: bool = True
+    SEARCHABLE_COLLECTIONS: List[str] = []
 
     class Config:
         env_prefix = ""
