@@ -1,6 +1,22 @@
 """Configuration settings for the MCP server."""
 
 from typing import Any, Dict, Optional
+from pydantic import BaseSettings
+
+
+class DatabaseConfig(BaseSettings):
+    """Database configuration settings."""
+    DB_HOST: str = "localhost"
+    DB_PORT: int = 5432
+    DB_NAME: str = "mcp_db"
+    DB_USER: str = "postgres"
+    DB_PASSWORD: str = ""
+    DB_POOL_SIZE: int = 5
+    DB_MAX_OVERFLOW: int = 10
+
+    class Config:
+        env_prefix = ""
+        case_sensitive = True
 
 
 class ServerConfig:
@@ -20,6 +36,7 @@ class ServerConfig:
         self.metadata: Dict[str, Any] = {
             "github": "https://github.com/yourusername/mcp-server-template-python",
         }
+        self.db: DatabaseConfig = DatabaseConfig()
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration to dictionary."""

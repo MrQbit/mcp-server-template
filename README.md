@@ -10,6 +10,7 @@ A ready-to-use template for building Model Context Protocol (MCP) servers in Pyt
 - [Quick Start](#quick-start)
 - [Command Line Options](#command-line-options)
 - [Creating Your Own Tools and Prompts](#creating-your-own-tools-and-prompts)
+- [Database Support](#database-support)
 - [Project Structure](#project-structure)
 - [Deployment Options](#deployment-options)
 - [Development Guide](#development-guide)
@@ -164,6 +165,37 @@ flake8 src test
 
 - 📚 MCP Documentation: [modelcontextprotocol.io](https://modelcontextprotocol.io)
 - 🐛 File an issue: [GitHub Issues](https://github.com/mrqbit/mcp-server-template-python/issues)
+
+## Database Support
+
+This template includes support for connecting to external PostgreSQL databases. To use database features:
+
+1. Copy `.env.example` to `.env` and configure your database connection:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Update the `.env` file with your database credentials:
+   ```
+   DB_HOST=your_database_host
+   DB_PORT=5432
+   DB_NAME=your_database_name
+   DB_USER=your_username
+   DB_PASSWORD=your_password
+   ```
+
+3. Use the database context in your tools:
+   ```python
+   @mcp.tool()
+   async def query_database(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
+       """Execute a read-only SQL query."""
+       session = context["database"]["db_session"]
+       result = await session.execute(query)
+       rows = result.fetchall()
+       return {"results": [dict(row) for row in rows]}
+   ```
+
+The database context provider automatically manages connections and sessions, with proper connection pooling and cleanup.
 
 ---
 

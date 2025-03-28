@@ -10,9 +10,12 @@ from typing import Any, Dict, List, Optional
 
 import uvicorn
 from mcp.server.fastmcp import FastMCP
+from mcp import MCP, Transport
+from mcp.errors import MCPError
 
 from src.config import config
 from src.utils import get_version, setup_logging
+from src.database.context import DatabaseContextProvider
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -34,6 +37,9 @@ mcp = FastMCP(
     icon="🚀",  # Optional server icon
     metadata=config.metadata,
 )
+
+# Register the database context provider
+mcp.register_context_provider(DatabaseContextProvider())
 
 
 # Define tools
