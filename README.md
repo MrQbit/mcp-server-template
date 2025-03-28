@@ -28,7 +28,7 @@ A ready-to-use template for building Model Context Protocol (MCP) servers in Pyt
 
 ```bash
 # Clone the repository
-git clone https://github.com/mrqbit/mcp-server-template-python.git my-mcp-server
+git clone https://github.com/MrQbit/mcp-server-template.git my-mcp-server
 cd my-mcp-server
 
 # Install in development mode
@@ -164,7 +164,7 @@ flake8 src test
 ## ❓ Need Help?
 
 - 📚 MCP Documentation: [modelcontextprotocol.io](https://modelcontextprotocol.io)
-- 🐛 File an issue: [GitHub Issues](https://github.com/mrqbit/mcp-server-template-python/issues)
+- 🐛 File an issue: [GitHub Issues](https://github.com/MrQbit/mcp-server-template/issues)
 
 ## Database Support
 
